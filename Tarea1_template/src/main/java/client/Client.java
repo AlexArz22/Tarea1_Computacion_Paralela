@@ -128,7 +128,8 @@ public class Client {
 	    while (!salir) {
 	        System.out.println("1. Registrar una compra");
 	        System.out.println("2. Buscar bencineras por comuna");
-	        System.out.println("3. Salir");
+	        System.out.println("3. Ver historial de compras");
+	        System.out.println("4. Salir");
 	        System.out.print("Seleccione una opción: ");
 	        
 	        int opcion = scanner.nextInt();
@@ -142,10 +143,13 @@ public class Client {
 	                buscarBencinerasPorComuna(autoSeleccionado);
 	                break;
 	                
-	            case 3:
+	            case 4:
 	                salir = true;
 	                System.out.println("Saliendo...");
 	                break;
+	            case 3:
+	            	verHistorialCompras(autoSeleccionado);
+	            	break;
 	                
 	            default:
 	                System.out.println("Opción inválida, por favor seleccione nuevamente.");
@@ -268,4 +272,29 @@ public class Client {
 	    	System.out.println("Precio: " + precio + " | Marca: " + marca + " | Ubicación: " + ubicacion);
 	    }
 	}
+	
+	public void verHistorialCompras(Auto autoSeleccionado) throws RemoteException {
+	    String patente = autoSeleccionado.getPatente();
+	    ArrayList<RegistroCompra> historial = server.getHistorialCompras(patente);
+	    
+	    if (historial.isEmpty()) {
+	        System.out.println("No hay registros de compra para el auto con patente: " + patente);
+	        return;
+	    }
+	    
+	    System.out.println("Historial de compras para el auto con patente: " + patente);
+	    System.out.println("--------------------------------------------------");
+	    System.out.println("ID | Fecha | Litros | Gasto Total");
+	    System.out.println("--------------------------------------------------");
+	    
+	    for (RegistroCompra registro : historial) {
+	        System.out.println(registro.getId() + " | " + 
+	                          registro.getFecha() + " | " + 
+	                          registro.getLitros() + " | " + 
+	                          registro.getCosto());
+	    }
+	    System.out.println("--------------------------------------------------");
+	}
+	
+	
 }

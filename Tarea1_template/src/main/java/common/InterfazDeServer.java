@@ -29,4 +29,5 @@ public interface InterfazDeServer extends Remote{
 
     public ArrayList<Estacion> getBencinerasPorComunaYMarca(String comuna, String marca) throws RemoteException, JsonMappingException, JsonProcessingException;
     public ArrayList<Estacion> getPrecioxComuna(String tipoDeCombustible, String comuna) throws JsonMappingException, JsonProcessingException, RemoteException;
+    public ArrayList<RegistroCompra> getHistorialCompras(String patente) throws RemoteException;
 }

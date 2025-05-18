@@ -29,6 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import common.Auto;
 import common.Estacion;
 import common.InterfazDeServer; 
+import common.RegistroCompra;
 
 public class ServerImpl implements InterfazDeServer{
 	
@@ -400,4 +401,46 @@ public class ServerImpl implements InterfazDeServer{
 
 	    return resultado;
 	}
+	
+	@Override
+	public ArrayList<RegistroCompra> getHistorialCompras(String patente) throws RemoteException {
+	    Connection connection = null;
+	    PreparedStatement ps = null;
+	    ResultSet resultados = null;
+	    ArrayList<RegistroCompra> historial = new ArrayList<>();
+	    
+	    try {
+	        String url = "jdbc:mysql://localhost:3306/empresa_colectivos";
+	        String username = "root";
+	        String password_BD = "";
+	        
+	        connection = DriverManager.getConnection(url, username, password_BD);
+	        
+	        String sql = "SELECT * FROM registro_compra WHERE patente = ? ORDER BY fecha_compra DESC";
+	        ps = connection.prepareStatement(sql);
+	        ps.setString(1, patente);
+	        
+	        resultados = ps.executeQuery();
+	        
+	        while(resultados.next()) {
+	            int idCompra = resultados.getInt("id_compra");
+	            String patenteAuto = resultados.getString("patente");
+	            float litros = resultados.getFloat("litros");
+	            float gastoTotal = resultados.getFloat("gasto_total");
+	            String fechaCompra = resultados.getString("fecha_compra");
+	            
+	            RegistroCompra registro = new RegistroCompra(idCompra, patenteAuto, litros, gastoTotal, fechaCompra);
+	            historial.add(registro);
+	        }
+	        
+	        connection.close();
+	        
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        System.out.println("No se pudo conectar a la BD o hubo un error en la consulta");
+	    }
+	    
+	    return historial;
+	}
+	
 }
