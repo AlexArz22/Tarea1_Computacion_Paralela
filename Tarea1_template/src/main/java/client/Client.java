@@ -156,11 +156,6 @@ public class Client {
 	        }
 	    }
 	}
-	
-	private int generarIdCompra() {
-	    Random random = new Random();
-	    return random.nextInt(100000) + 1;
-	}
 
 	private void registrarCompra(Auto autoSeleccionado) throws JsonMappingException, JsonProcessingException, RemoteException {
 
@@ -242,11 +237,14 @@ public class Client {
         System.out.println("Ingrese la fecha de la compra. FORMATO: Año-Mes-Día, Ejemplo: 2000-02-30");
         String fechaCompra = scanner.nextLine();
         
-        int idCompra = generarIdCompra();
-        RegistroCompra registroCompra = new RegistroCompra(idCompra, autoSeleccionado.getPatente(), litros, gastoTotal, fechaCompra);
-    
-	    System.out.println("Compra registrada en la comuna '" + comuna + "' en la estación de servicio '" + marca + "'.");
-	    
+        RegistroCompra registroCompra = new RegistroCompra(0,autoSeleccionado.getPatente(), litros, gastoTotal, fechaCompra);
+        
+        try {
+            server.agregarCompra(registroCompra);
+            System.out.println("Compra registrada en la comuna '" + comuna + "' en la estación de servicio '" + marca + "'.");
+        } catch (Exception e) {
+            System.out.println("NO se pudo registrar la compra");
+        }
 	}
 
 	private void buscarBencinerasPorComuna(Auto autoSeleccionado) throws JsonMappingException, JsonProcessingException, RemoteException {

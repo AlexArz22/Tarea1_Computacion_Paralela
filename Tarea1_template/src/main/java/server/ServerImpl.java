@@ -416,18 +416,18 @@ public class ServerImpl implements InterfazDeServer{
 	        
 	        connection = DriverManager.getConnection(url, username, password_BD);
 	        
-	        String sql = "SELECT * FROM registro_compra WHERE patente = ? ORDER BY fecha_compra DESC";
+	        String sql = "SELECT * FROM historial_compras WHERE patente = ? ORDER BY fecha DESC";
 	        ps = connection.prepareStatement(sql);
 	        ps.setString(1, patente);
 	        
 	        resultados = ps.executeQuery();
 	        
 	        while(resultados.next()) {
-	            int idCompra = resultados.getInt("id_compra");
+	            int idCompra = resultados.getInt("id");
 	            String patenteAuto = resultados.getString("patente");
 	            float litros = resultados.getFloat("litros");
-	            float gastoTotal = resultados.getFloat("gasto_total");
-	            String fechaCompra = resultados.getString("fecha_compra");
+	            float gastoTotal = resultados.getFloat("costo");
+	            String fechaCompra = resultados.getString("fecha");
 	            
 	            RegistroCompra registro = new RegistroCompra(idCompra, patenteAuto, litros, gastoTotal, fechaCompra);
 	            historial.add(registro);
@@ -443,4 +443,30 @@ public class ServerImpl implements InterfazDeServer{
 	    return historial;
 	}
 	
+	@Override
+	public void agregarCompra(RegistroCompra compra) throws RemoteException, IOException, SQLException{
+	    Connection connection = null;
+	    PreparedStatement ps = null;
+
+	    try {
+	        String url = "jdbc:mysql://localhost:3306/empresa_colectivos";
+	        String username = "root";
+	        String password_BD = "";
+
+	        connection = DriverManager.getConnection(url, username, password_BD);
+
+	        String insertSql = "INSERT INTO historial_compras (patente, litros, costo, fecha) VALUES (?, ?, ?, ?)";
+	        ps = connection.prepareStatement(insertSql);
+	        ps.setString(1, compra.getPatente());
+	        ps.setFloat(2, compra.getLitros());
+	        ps.setFloat(3, compra.getCosto());
+	        ps.setString(4, compra.getFecha());
+
+	        ps.executeUpdate();
+
+	    } finally {
+	        if (ps != null) ps.close();
+	        if (connection != null) connection.close();
+	    }
+	}
 }

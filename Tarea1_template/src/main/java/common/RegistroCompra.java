@@ -1,7 +1,7 @@
 package common;
 
-
-public class RegistroCompra {
+import java.io.Serializable;
+public class RegistroCompra implements Serializable {
     private int id;
     private String patente;
     private float litros;
