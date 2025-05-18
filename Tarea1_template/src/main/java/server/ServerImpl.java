@@ -100,14 +100,55 @@ public class ServerImpl implements InterfazDeServer{
 		return auto;
 	}
 	
+	
+	public boolean validarPatente(String patente) {
+		// Que no sea nula o vacía
+		if (patente == null || patente.trim().isEmpty()) {
+			return false;
+	    }
+
+		String formato1 = "^[A-Z]{2}\\d{4}$";   // AB1234
+	    String formato2 = "^[A-Z]{4}\\d{2}$";   // ABCD12
+		
+	    
+	    if (!patente.matches(formato1) && !patente.matches(formato2)) return false;
+	    
+	    for(Auto auto : BD_copia) {
+	    	if (auto.getPatente().equals(patente)) {
+	    		return false;
+	    	}
+	    }
+	    
+	    return true;
+	    
+	}
+	
+	
 	@Override
 	public void agregarAuto() throws IOException, RemoteException {
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		
-		System.out.println("Ingrese la patente del vehículo:");
+		
+		System.out.println("Ingrese la patente del vehículo: (FORMATO: ABCD34 o AB1234)");
 		String patente = reader.readLine();
-		System.out.println("");
+		
+		boolean validadorPatente = false;
+		
+		while(validadorPatente == false) {
+			
+			if(validarPatente(patente) == true) {
+				validadorPatente = true;
+			}
+			else {
+				System.out.println("Formato inválido o Patente repetida, ingrese nuevamente");
+				patente = reader.readLine();
+			}
+			
+			System.out.println("");
+		}
+		
+		
 		
 		System.out.println("Ingrese el conductor del vehículo: ");
 		String conductor = reader.readLine();
@@ -123,7 +164,7 @@ public class ServerImpl implements InterfazDeServer{
 	        System.out.println("3. 97");
 	        System.out.println("4. Kerosene");
 	        System.out.println("5. Diesel");
-	        System.out.print("Ingrese el número o nombre de la opción: ");
+	        System.out.print("Ingrese el número de la opción: ");
 	        String entrada = reader.readLine().trim();
 
 	        switch (entrada) {
