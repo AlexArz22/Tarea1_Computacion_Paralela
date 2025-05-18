@@ -144,8 +144,7 @@ public class ServerImpl implements InterfazDeServer{
 				System.out.println("Formato inválido o Patente repetida, ingrese nuevamente");
 				patente = reader.readLine();
 			}
-			
-			System.out.println("");
+
 		}
 		
 		

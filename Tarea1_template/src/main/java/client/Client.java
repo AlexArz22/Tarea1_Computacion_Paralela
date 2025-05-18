@@ -13,6 +13,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -89,6 +93,9 @@ public class Client {
     }
 
 
+
+    
+    
 	public void seleccionarAuto() throws RemoteException, JsonMappingException, JsonProcessingException {
 		ArrayList<Auto> autos = server.getAutos();
 		
@@ -156,6 +163,18 @@ public class Client {
 	        }
 	    }
 	}
+	
+	
+    public boolean validarFecha(String fecha) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate.parse(fecha, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
+    }
+	
 
 	private void registrarCompra(Auto autoSeleccionado) throws JsonMappingException, JsonProcessingException, RemoteException {
 
@@ -234,8 +253,19 @@ public class Client {
 
         System.out.println("La cantidad de litros comprados es: " + litros);
         
-        System.out.println("Ingrese la fecha de la compra. FORMATO: Año-Mes-Día, Ejemplo: 2000-02-30");
-        String fechaCompra = scanner.nextLine();
+        
+        String fechaCompra;
+
+        while (true) {
+            System.out.println("Ingrese la fecha de la compra. FORMATO: Año-Mes-Día, Ejemplo: 2000-02-28");
+            fechaCompra = scanner.nextLine();
+
+            if (validarFecha(fechaCompra)) {
+                break;
+            } else {
+                System.out.println("Fecha inválida. Intente nuevamente.");
+            }
+        }
         
         RegistroCompra registroCompra = new RegistroCompra(0,autoSeleccionado.getPatente(), litros, gastoTotal, fechaCompra);
         
