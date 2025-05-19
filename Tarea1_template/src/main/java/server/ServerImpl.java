@@ -54,16 +54,12 @@ public class ServerImpl implements InterfazDeServer{
 			
 			connection = DriverManager.getConnection(url, username, password_BD);
 			
-			//Met
 			query = connection.createStatement();
 			String sql = "SELECT * FROM auto";
-			//INSERT para agregar datos a la BD, PreparedStatement
-			//Delete
-			//UPDATE
+
 			resultados = query.executeQuery(sql);
 			
 			while(resultados.next()) {
-				//Revisar VALORES de BD
 				String patente = resultados.getString("patente");
 				String conductor = resultados.getString("conductor");
 				String tipoCombustible = resultados.getString("tipo_combustible");
@@ -73,10 +69,10 @@ public class ServerImpl implements InterfazDeServer{
 				
 				BD_copia.add(newAuto);
 				
-				System.out.println("" + patente + "" + conductor + "" + tipoCombustible);
+				//System.out.println("" + patente + "" + conductor + "" + tipoCombustible);
 			}
 			
-			System.out.println(resultados);
+			//System.out.println(resultados);
 			
 			connection.close();
 			
@@ -203,7 +199,7 @@ public class ServerImpl implements InterfazDeServer{
 	        int filas = ps.executeUpdate();
 
 	        if (filas > 0) {
-	            System.out.println("Auto insertado correctamente.");
+	            System.out.println("Auto insertado correctamente.\n");
 	        } else {
 	            System.out.println("No se insertó el auto.");
 	        }
@@ -242,7 +238,7 @@ public class ServerImpl implements InterfazDeServer{
 	        BD_copia.remove(seleccion - 1);
 	        eliminar_BD(autoSeleccionado.getPatente());
 
-	        System.out.println("Auto eliminado correctamente: " + autoSeleccionado.getPatente());
+	        System.out.println("Auto eliminado correctamente: " + autoSeleccionado.getPatente() + "\n");
 	    } catch (NumberFormatException e) {
 	        System.out.println("Entrada inválida. Debe ingresar un número.");
 	    }

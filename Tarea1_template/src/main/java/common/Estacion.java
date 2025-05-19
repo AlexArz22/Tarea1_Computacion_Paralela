@@ -45,7 +45,7 @@ public class Estacion implements Serializable{
             case "KE":
                 return this.precioKe;
             default:
-                return "0"; // Si no se encuentra el tipo de combustible, retornamos "0"
+                return "0"; 
         }
     }
     
