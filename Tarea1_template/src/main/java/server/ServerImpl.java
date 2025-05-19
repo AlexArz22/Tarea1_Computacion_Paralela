@@ -361,16 +361,17 @@ public class ServerImpl implements InterfazDeServer{
 	                String comunaActual = estacion.path("ubicacion").path("nombre_comuna").asText();
 	                String direccion = estacion.path("ubicacion").path("direccion").asText();
 	                String marcaActual = estacion.path("distribuidor").path("marca").asText();
-
+	                String razonSocial = estacion.path("razon_social").asText();
+	                
 	                String precio93 = estacion.path("precios").path("93").path("precio").asText(null);
 	                String precio95 = estacion.path("precios").path("95").path("precio").asText(null);
 	                String precio97 = estacion.path("precios").path("97").path("precio").asText(null);
 	                String precioDi  = estacion.path("precios").path("DI").path("precio").asText(null);
 	                String precioKe  = estacion.path("precios").path("KE").path("precio").asText(null);
-
+	                
 	                Estacion estacionObjeto = new Estacion(
 	                    marcaActual, comunaActual, direccion,
-	                    precio93, precio95, precio97, precioDi, precioKe
+	                    precio93, precio95, precio97, precioDi, precioKe,razonSocial
 	                );
 	                estaciones.add(estacionObjeto);
 	            }
