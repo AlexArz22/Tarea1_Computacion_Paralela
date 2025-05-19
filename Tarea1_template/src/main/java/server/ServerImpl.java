@@ -300,7 +300,7 @@ public class ServerImpl implements InterfazDeServer{
 
 	        ObjectMapper mapper = new ObjectMapper();
 	        JsonNode root = mapper.readTree(response);
-	        String token = root.path("token").asText(null);  // Ajusta "token" si la clave es distinta en la respuesta
+	        String token = root.path("token").asText(null);  
 
 	        return token;
 
