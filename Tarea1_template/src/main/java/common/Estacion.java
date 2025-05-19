@@ -9,10 +9,11 @@ public class Estacion implements Serializable{
     private String precio97;
     private String precioDi;
     private String precioKe;
+    private String razonSocial;
 
     public Estacion(String marcaActual, String comunaActual, String direccion,
                         String precio93, String precio95, String precio97,
-                        String precioDi, String precioKe) {
+                        String precioDi, String precioKe, String razonSocial) {
         this.marca = marcaActual;
         this.comuna = comunaActual;
         this.direccion = direccion;
@@ -21,6 +22,7 @@ public class Estacion implements Serializable{
         this.precio97 = precio97;
         this.precioDi = precioDi;
         this.precioKe = precioKe;
+        this.razonSocial = razonSocial;
     }
 
     public String getMarcaActual() { return marca; }
@@ -31,6 +33,7 @@ public class Estacion implements Serializable{
     public String getPrecio97() { return precio97; }
     public String getPrecioDi() { return precioDi; }
     public String getPrecioKe() { return precioKe; }
+    public String getRazonSocial() { return razonSocial; }
     
     public String getPrecio(String tipoDeCombustible) {
         switch (tipoDeCombustible) {
@@ -79,6 +82,10 @@ public class Estacion implements Serializable{
 
     public void setPrecioKe(String precioKe) {
         this.precioKe = precioKe;
+    }
+    
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
     }
 
 }

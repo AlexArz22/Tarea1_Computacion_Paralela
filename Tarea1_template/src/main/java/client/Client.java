@@ -85,11 +85,26 @@ public class Client {
         } 
     }
     
-    public ArrayList<Estacion> getDataFromApi() throws RemoteException {
+    public void getDataFromApi() throws RemoteException {
         
-    	System.out.println(server.getDataFromApi());
-    	
-    	return server.getDataFromApi();
+        ArrayList<Estacion> estaciones = server.getDataFromApi();
+
+        for (Estacion estacion : estaciones) {
+            System.out.println("╔════════════════════════════════════════════════════════╗");
+            System.out.println("║ "+ estacion.getRazonSocial());
+            System.out.println("╠ Marca    : "+ estacion.getMarcaActual());
+            System.out.println("╠ Dirección: "+ estacion.getDireccion());
+            System.out.println("╠ Comuna   : "+ estacion.getComunaActual());
+            System.out.println("╠ Precios:");
+            System.out.println("║   93: " + (estacion.getPrecio93() != null ? estacion.getPrecio93() : "Precio no disponible"));
+            System.out.println("║   95: " + (estacion.getPrecio95() != null ? estacion.getPrecio95() : "Precio no disponible"));
+            System.out.println("║   97: " + (estacion.getPrecio97() != null ? estacion.getPrecio97() : "Precio no disponible"));
+            System.out.println("║   DI: "  + (estacion.getPrecioDi()  != null ? estacion.getPrecioDi()  : "Precio no disponible"));
+            System.out.println("║   KE: "  + (estacion.getPrecioKe()  != null ? estacion.getPrecioKe()  : "Precio no disponible"));
+            System.out.println("╚════════════════════════════════════════════════════════╝\n");
+        }
+
+        System.out.println("Total de estaciones: "+ estaciones.size());
     }
 
 
