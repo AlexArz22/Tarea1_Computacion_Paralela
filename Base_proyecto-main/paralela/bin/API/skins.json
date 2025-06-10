@@ -1,0 +1,298 @@
+{
+    "1": {
+        "nombreSkin": "Ahri Zorro de nueve colas",
+        "personaje": "Ahri",
+        "descripcion": {
+            "precio": 520,
+            "valorDescuento": 0
+        }
+    },
+    "2": {
+        "nombreSkin": "Ezreal pulso de fuego",
+        "personaje": "Ezreal",
+        "descripcion": {
+            "precio": 3250,
+            "valorDescuento": 25
+        }
+    },
+    "3": {
+        "nombreSkin": "Thresh Espiritu Cosechador",
+        "personaje": "Thresh",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 30
+        }
+    },
+    "4": {
+        "nombreSkin": "Lux Elementalista",
+        "personaje": "Lux",
+        "descripcion": {
+            "precio": 3250,
+            "valorDescuento": 0
+        }
+    },
+    "5": {
+        "nombreSkin": "Miss Fortune Artillera",
+        "personaje": "Miss Fortune",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 15
+        }
+    },
+    "6": {
+        "nombreSkin": "Katarina Academia de Combate",
+        "personaje": "Katarina",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "7": {
+        "nombreSkin": "Garen Reinos en Guerra",
+        "personaje": "Garen",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "8": {
+        "nombreSkin": "Sona DJ",
+        "personaje": "Sona",
+        "descripcion": {
+            "precio": 3250,
+            "valorDescuento": 40
+        }
+    },
+    "9": {
+        "nombreSkin": "Morgana Guardiana de las Estrellas",
+        "personaje": "Morgana",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "10": {
+        "nombreSkin": "Lee Sin Puños Divinos",
+        "personaje": "Lee Sin",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 0
+        }
+    },
+    "11": {
+        "nombreSkin": "Annie en las Sombras",
+        "personaje": "Annie",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 20
+        }
+    },
+    "12": {
+        "nombreSkin": "Olaf Vikingo",
+        "personaje": "Olaf",
+        "descripcion": {
+            "precio": 750,
+            "valorDescuento": 0
+        }
+    },
+    "13": {
+        "nombreSkin": "Zed Maestro de las Sombras",
+        "personaje": "Zed",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "14": {
+        "nombreSkin": "Ashe Arquera de Hielo",
+        "personaje": "Ashe",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 25
+        }
+    },
+    "15": {
+        "nombreSkin": "Teemo Explorador",
+        "personaje": "Teemo",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 10
+        }
+    },
+    "16": {
+        "nombreSkin": "Nasus Guardián de las Arenas",
+        "personaje": "Nasus",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 15
+        }
+    },
+    "17": {
+        "nombreSkin": "Diana Valquiria Oscura",
+        "personaje": "Diana",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "18": {
+        "nombreSkin": "Draven Gladiador",
+        "personaje": "Draven",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 30
+        }
+    },
+    "19": {
+        "nombreSkin": "Akali Asesina de los Cielos",
+        "personaje": "Akali",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 0
+        }
+    },
+    "20": {
+        "nombreSkin": "Talon Renegado",
+        "personaje": "Talon",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 20
+        }
+    },
+    "21": {
+        "nombreSkin": "Yasuo Guardián de las Puertas",
+        "personaje": "Yasuo",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 10
+        }
+    },
+    "22": {
+        "nombreSkin": "Yasuo Verdugo Nocturno",
+        "personaje": "Yasuo",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 20
+        }
+    },
+    "23": {
+        "nombreSkin": "Zoe Cazadora de Estrellas",
+        "personaje": "Zoe",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "24": {
+        "nombreSkin": "Zoe Viajera del Tiempo",
+        "personaje": "Zoe",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 15
+        }
+    },
+    "25": {
+        "nombreSkin": "Zed Destructor del Vacío",
+        "personaje": "Zed",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 10
+        }
+    },
+    "26": {
+        "nombreSkin": "Zed Amo del Relámpago",
+        "personaje": "Zed",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 0
+        }
+    },
+    "27": {
+        "nombreSkin": "Kayn Oscuro",
+        "personaje": "Kayn",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 30
+        }
+    },
+    "28": {
+        "nombreSkin": "Kayn Cazador de Almas",
+        "personaje": "Kayn",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 25
+        }
+    },
+    "29": {
+        "nombreSkin": "LeBlanc Máscara Espectral",
+        "personaje": "LeBlanc",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 20
+        }
+    },
+    "30": {
+        "nombreSkin": "LeBlanc Hechicera Arcana",
+        "personaje": "LeBlanc",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 10
+        }
+    },
+    "31": {
+        "nombreSkin": "Darius Rey de la Guerra",
+        "personaje": "Darius",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 5
+        }
+    },
+    "32": {
+        "nombreSkin": "Darius Ejecutor",
+        "personaje": "Darius",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 15
+        }
+    },
+    "33": {
+        "nombreSkin": "Orianna Corazón de Hierro",
+        "personaje": "Orianna",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 0
+        }
+    },
+    "34": {
+        "nombreSkin": "Orianna Inventora",
+        "personaje": "Orianna",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 10
+        }
+    },
+    "35": {
+        "nombreSkin": "Viktor Creador",
+        "personaje": "Viktor",
+        "descripcion": {
+            "precio": 1350,
+            "valorDescuento": 20
+        }
+    },
+    "36": {
+        "nombreSkin": "Viktor Caos Mecánico",
+        "personaje": "Viktor",
+        "descripcion": {
+            "precio": 1820,
+            "valorDescuento": 0
+        }
+    },
+    "37": {
+        "nombreSkin": "Syndra Reina Oscura",
+        "personaje": "Syndra",
+        "descripcion": {
+            "precio": 975,
+            "valorDescuento": 5
+        }
+    }
+}

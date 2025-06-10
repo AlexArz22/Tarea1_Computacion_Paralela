@@ -1,0 +1,28 @@
+{
+    "riotPoints": [
+        {
+            "cantidad": 650,
+            "precioUSD": 5
+        },
+        {
+            "cantidad": 1380,
+            "precioUSD": 10
+        },
+        {
+            "cantidad": 2800,
+            "precioUSD": 20
+        },
+        {
+            "cantidad": 5000,
+            "precioUSD": 35
+        },
+        {
+            "cantidad": 7200,
+            "precioUSD": 50
+        },
+        {
+            "cantidad": 15000,
+            "precioUSD": 100
+        }
+    ]
+}
