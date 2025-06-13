@@ -26,22 +26,83 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+
 import common.Auto;
 import common.Estacion;
 import common.InterfazDeServer; 
 import common.RegistroCompra;
 
 public class ServerImpl implements InterfazDeServer{
+	private Lock lock = new ReentrantLock();
+	private long lastReleaseTime = 0;
+	private final long MIN_BLOCK_TIME_MS = 15000;  // 15 segundos de bloqueo
 	
 	public ServerImpl() throws RemoteException {
 		conectarBD();
 		UnicastRemoteObject.exportObject(this, 0);
 	}
 	
+	//PRUEBA 8 SEGUNDOS
+	private boolean requestMutex(String nombreCliente) {
+		lock.lock();
+		try {
+			long now = System.currentTimeMillis();
+			long timeSinceLastRealease = now-lastReleaseTime;
+			if(timeSinceLastRealease<MIN_BLOCK_TIME_MS) {
+				long waitTime = MIN_BLOCK_TIME_MS-timeSinceLastRealease;
+				System.out.println(nombreCliente+" espera "+waitTime+" ms para bloqueo ");
+				Thread.sleep(waitTime);
+			}
+			System.out.println(nombreCliente+" obtuvo recurso");
+			return true;
+		}catch(InterruptedException e){
+			System.err.println("error al querer obtener recurso");
+			return false;
+		}
+	}
+	
+	private void releaseMutex(String nombreCliente) {
+		lastReleaseTime=System.currentTimeMillis();
+		System.out.println(nombreCliente+" libera recurso");
+		lock.unlock();
+	}
+	
+	
+	
+	//SE SUPONE QUE SON 8 segundos pero se libera cuando se deja de ocupar 
+	/*
+	private boolean requestMutex(String nombreCliente) {
+		try {
+			System.out.println(nombreCliente+" intentando acceder a recurso");
+			boolean acquired = lock.tryLock(600,TimeUnit.SECONDS);
+			if (acquired) {
+				System.out.println(nombreCliente+" obtuvo recurso");
+			}
+			return acquired;
+		}catch(InterruptedException e){
+			System.err.println("error al querer obtener recurso");
+			return false;
+		}
+	}
+	
+	private void releaseMutex(String nombreCliente) {
+		System.out.println(nombreCliente+" libera recurso");
+		lock.unlock();
+	}*/
+
 	private ArrayList<Auto> BD_copia = new ArrayList<>();
 	
 	@Override
 	public void conectarBD () throws RemoteException {
+		if(!requestMutex("BASE DE DATOS")) {
+			throw new RemoteException("no se pudo hacer bloqueo BASE DATOS");
+		}
 		Connection connection = null;
 		Statement query = null;
 		ResultSet resultados = null;
@@ -78,6 +139,8 @@ public class ServerImpl implements InterfazDeServer{
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se pudo conectar a la BD");
+		}finally {
+			releaseMutex("BASE DE DATOS");
 		}
 	}
 	
@@ -103,10 +166,18 @@ public class ServerImpl implements InterfazDeServer{
 	
 	@Override
 	public boolean agregarAuto(Auto auto) throws RemoteException{
-		if (insertar_BD(auto)) {
-			BD_copia.add(auto);
-			return true;
-		}else return false;
+		if(!requestMutex(auto.getPatente())) {
+			throw new RemoteException("no se pudo hacer bloqueo AgregarAuto");
+		}
+		
+		try {
+			if (insertar_BD(auto)) {
+				BD_copia.add(auto);
+				return true;
+			}else return false;
+		}finally {
+			releaseMutex(auto.getPatente());
+		}
 	}
 	
 	public boolean insertar_BD(Auto auto) {
@@ -143,10 +214,18 @@ public class ServerImpl implements InterfazDeServer{
 	
 	public boolean eliminarAuto(int seleccion) throws IOException, RemoteException {
 		Auto autoSeleccionado = BD_copia.get(seleccion - 1);
-		if (eliminar_BD(autoSeleccionado.getPatente())) {
-			BD_copia.remove(seleccion - 1);
-			return true;
-		}else return false;
+		if(!requestMutex(autoSeleccionado.getPatente())) {
+			throw new RemoteException("no se pudo hacer bloqueo ELIMINAR AUTO");
+		}
+			
+		try {
+			if (eliminar_BD(autoSeleccionado.getPatente())) {
+				BD_copia.remove(seleccion - 1);
+				return true;
+			}else return false;
+		}finally {
+			releaseMutex(autoSeleccionado.getPatente());
+		}
 	}
 
 	public boolean eliminar_BD(String patente) {
@@ -178,6 +257,9 @@ public class ServerImpl implements InterfazDeServer{
 	
 	@Override
 	public boolean modificarConductor(String patente, String nuevoConductor) throws RemoteException {
+		if(!requestMutex(patente)) {
+			throw new RemoteException("no se pudo hacer bloqueo getHistorialCompras");
+		}
 	    Connection connection = null;
 	    PreparedStatement ps = null;
 	    boolean exito = false;
@@ -207,6 +289,7 @@ public class ServerImpl implements InterfazDeServer{
 	        e.printStackTrace();
 	        System.out.println("Error al modificar el conductor en la BD.");
 	    } finally {
+	    	releaseMutex(patente);
 	        try {
 	            if (ps != null) ps.close();
 	            if (connection != null) connection.close();
@@ -394,6 +477,9 @@ public class ServerImpl implements InterfazDeServer{
 	
 	@Override
 	public ArrayList<RegistroCompra> getHistorialCompras(String patente) throws RemoteException {
+		if(!requestMutex(patente)) {
+			throw new RemoteException("no se pudo hacer bloqueo getHistorialCompras");
+		}
 	    Connection connection = null;
 	    PreparedStatement ps = null;
 	    ResultSet resultados = null;
@@ -428,6 +514,8 @@ public class ServerImpl implements InterfazDeServer{
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        System.out.println("No se pudo conectar a la BD o hubo un error en la consulta");
+	    }finally {
+	    	releaseMutex(patente);
 	    }
 	    
 	    return historial;
@@ -435,6 +523,10 @@ public class ServerImpl implements InterfazDeServer{
 	
 	@Override
 	public void agregarCompra(RegistroCompra compra) throws RemoteException, IOException, SQLException{
+		if(!requestMutex(compra.getPatente())) {
+			throw new RemoteException("no se pudo hacer bloqueo agregarCompra");
+		}
+		
 	    Connection connection = null;
 	    PreparedStatement ps = null;
 
@@ -455,6 +547,7 @@ public class ServerImpl implements InterfazDeServer{
 	        ps.executeUpdate();
 
 	    } finally {
+	    	releaseMutex(compra.getPatente());
 	        if (ps != null) ps.close();
 	        if (connection != null) connection.close();
 	    }
