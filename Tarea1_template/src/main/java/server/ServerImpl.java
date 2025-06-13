@@ -46,7 +46,7 @@ public class ServerImpl implements InterfazDeServer{
 		Statement query = null;
 		ResultSet resultados = null;
 		//PreparedStatement test = null
-		
+		BD_copia.clear();
 		try {
 			String url = "jdbc:mysql://localhost:3306/empresa_colectivos";
 			String username = "root";
@@ -74,11 +74,7 @@ public class ServerImpl implements InterfazDeServer{
 			
 			//System.out.println(resultados);
 			
-			connection.close();
-			
-			
-			
-			
+			connection.close();	
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se pudo conectar a la BD");
@@ -267,6 +263,52 @@ public class ServerImpl implements InterfazDeServer{
 	        e.printStackTrace();
 	        System.out.println("Error al conectar o eliminar en la base de datos.");
 	    }
+	}
+	
+	@Override
+	public boolean modificarConductor(String patente, String nuevoConductor) throws RemoteException {
+	    Connection connection = null;
+	    PreparedStatement ps = null;
+	    boolean exito = false;
+
+	    try {
+	        String url = "jdbc:mysql://localhost:3306/empresa_colectivos";
+	        String username = "root";
+	        String password_BD = "";
+
+	        connection = DriverManager.getConnection(url, username, password_BD);
+
+	        String sql = "UPDATE auto SET conductor = ? WHERE patente = ?";
+	        ps = connection.prepareStatement(sql);
+	        ps.setString(1, nuevoConductor);
+	        ps.setString(2, patente);
+
+	        int filas = ps.executeUpdate();
+
+	        if (filas > 0) {
+	            System.out.println("Conductor modificado correctamente para la patente: " + patente);
+	            exito = true;
+	        } else {
+	            System.out.println("No se encontró un auto con la patente indicada.");
+	        }
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        System.out.println("Error al modificar el conductor en la BD.");
+	    } finally {
+	        try {
+	            if (ps != null) ps.close();
+	            if (connection != null) connection.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	    
+	    //desconectarse y volver a conectar para actualizar arreglo local de autos
+	    if (exito) {
+	        conectarBD(); 
+	    }
+	    return exito;
 	}
 
 	

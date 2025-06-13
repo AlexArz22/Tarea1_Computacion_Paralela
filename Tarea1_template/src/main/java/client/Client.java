@@ -151,7 +151,8 @@ public class Client {
 	        System.out.println("1. Registrar una compra");
 	        System.out.println("2. Buscar bencineras por comuna");
 	        System.out.println("3. Ver historial de compras");
-	        System.out.println("4. Salir");
+	        System.out.println("4. Modificar conductor");
+	        System.out.println("5. Salir");
 	        System.out.print("Seleccione una opción: ");
 	        
 	        int opcion = scanner.nextInt();
@@ -166,6 +167,9 @@ public class Client {
 	                break;
 	                
 	            case 4:
+	            	modificarConductor(autoSeleccionado);
+	                break;
+	            case 5:
 	                salir = true;
 	                System.out.println("Saliendo...");
 	                break;
@@ -338,6 +342,22 @@ public class Client {
 	    }
 	    System.out.println("--------------------------------------------------");
 	}
+	
+	private void modificarConductor(Auto autoSeleccionado) throws RemoteException {
+	    Scanner scanner = new Scanner(System.in);
+
+	    System.out.print("Ingrese el nuevo nombre del conductor: ");
+	    String nuevoConductor = scanner.nextLine();
+
+	    boolean exito = server.modificarConductor(autoSeleccionado.getPatente(), nuevoConductor);
+
+	    if (exito) {
+	        System.out.println("Conductor actualizado correctamente.");
+	    } else {
+	        System.out.println("No se pudo actualizar el conductor.");
+	    }
+	}
+
 	
 	
 }
