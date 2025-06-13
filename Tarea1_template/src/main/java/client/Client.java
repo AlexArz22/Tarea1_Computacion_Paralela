@@ -16,6 +16,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -92,7 +94,7 @@ public class Client {
                         System.err.println("Fallo el servidor principal. Cambiando a servidor de respaldo...");
                         cambiarAServidorRespaldo();
                     } else {
-                        System.err.println("Fallo el servidor de respaldo. Terminando cliente...");
+                        System.err.print("Fallo el servidor de respaldo.");
                         terminarEjecucion();
                     }
                 } catch (InterruptedException e) {
@@ -104,6 +106,7 @@ public class Client {
 
 
     private void terminarEjecucion() {
+    	System.err.println("Terminando cliente...");
         running = false;
         System.exit(1);
     }
@@ -127,34 +130,111 @@ public class Client {
         }
         System.out.println("");
     }
+    
+    public boolean validarPatente(String patente)throws RemoteException{
+		// Que no sea nula o vacía
+		if (patente == null || patente.trim().isEmpty()) {
+			return false;
+	    }
 
-    public void agregarAuto() throws IOException {
-        int cantidadAntes = server.getAutos().size();
+		String formato1 = "^[A-Z]{2}\\d{4}$";   // AB1234
+	    String formato2 = "^[A-Z]{4}\\d{2}$";   // ABCD12
+		
+	    
+	    if (!patente.matches(formato1) && !patente.matches(formato2)) return false;
+	    
+	    if(server.estaPatente(patente)) return false;
+	    return true;
+	}
 
-        server.agregarAuto();
+    public void agregarAuto() throws IOException{
+    	
+    	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+		
+		System.out.println("Ingrese la patente del vehículo: (FORMATO: ABCD34 o AB1234)");
+		String patente = reader.readLine();
+		
+		boolean validadorPatente = false;
+		
+		while(validadorPatente == false) {
+			
+			if(validarPatente(patente) == true) {
+				validadorPatente = true;
+			}
+			else {
+				System.out.println("Formato inválido o Patente repetida, ingrese nuevamente");
+				patente = reader.readLine();
+			}
 
-        int cantidadDespues = server.getAutos().size();
+		}
+		System.out.println("Ingrese el conductor del vehículo: ");
+		String conductor = reader.readLine();
+		System.out.println("");
+		
+		String tipoCombustible = "";
+	    boolean entradaValida = false;
 
-        if (cantidadDespues > cantidadAntes) {
-            System.out.println("Auto agregado correctamente.");
-        } else {
-            System.out.println("No se pudo agregar el auto.");
+	    while (!entradaValida) {
+	        System.out.println("Seleccione el tipo de combustible del vehículo:");
+	        System.out.println("1. 93");
+	        System.out.println("2. 95");
+	        System.out.println("3. 97");
+	        System.out.println("4. Kerosene");
+	        System.out.println("5. Diesel");
+	        System.out.print("Ingrese el número de la opción: ");
+	        String entrada = reader.readLine().trim();
+
+	        switch (entrada) {
+	            case "1": tipoCombustible = "93"; entradaValida = true; break;
+	            case "2": tipoCombustible = "95"; entradaValida = true; break;
+	            case "3": tipoCombustible = "97"; entradaValida = true; break;
+	            case "4": tipoCombustible = "KE"; entradaValida = true; break;
+	            case "5": tipoCombustible = "DI"; entradaValida = true; break;
+	            default:
+	                System.out.println("Opción inválida. Intente nuevamente.\n");
+	        }
+	    }
+        if(server.agregarAuto(new Auto(patente, conductor, tipoCombustible))) {
+        	System.out.println("Auto agregado correctamente.");
+        }else {
+        	System.out.println("No se pudo agregar el auto.");
         } 
-        
     }
 
     public void quitarAuto() throws IOException {
-        int cantidadAntes = server.getAutos().size();
+    	ArrayList<Auto> autos= server.getAutos();
+    	
+    	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-        server.eliminarAuto();
+	    if (autos.isEmpty()) {
+	        System.out.println("No hay autos registrados para eliminar.");
+	        return;
+	    }
 
-        int cantidadDespues = server.getAutos().size();
+	    System.out.println("Lista de autos registrados:");
+	    for (int i = 0; i < autos.size(); i++) {
+	        Auto auto = autos.get(i);
+	        System.out.println((i + 1) + ". Patente: " + auto.getPatente() + " | Conductor: " + auto.getConductor() + " | Combustible: " + auto.getTipoCombustible());
+	    }
 
-        if (cantidadDespues < cantidadAntes) {
-            System.out.println("Auto eliminado correctamente.");
-        } else {
-            System.out.println("No se pudo eliminar el auto.");
-        } 
+	    System.out.print("\nIngrese el número del auto que desea eliminar: ");
+	    String entrada = reader.readLine().trim();
+
+	    try {
+	        int seleccion = Integer.parseInt(entrada);
+
+	        if (seleccion < 1 || seleccion > autos.size()) {
+	            System.out.println("Número fuera de rango.");
+	            return;
+	        }
+	        
+	        if (server.eliminarAuto(seleccion))System.out.println("Auto eliminado correctamente.");
+	        else System.out.println("No se pudo eliminar el auto.");
+	        
+	    } catch (NumberFormatException e) {
+	        System.out.println("Entrada inválida. Debe ingresar un número.");
+	    }
+    	
     }
     
     public void getDataFromApi() throws RemoteException {

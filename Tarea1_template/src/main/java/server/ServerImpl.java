@@ -92,91 +92,24 @@ public class ServerImpl implements InterfazDeServer{
 		return auto;
 	}
 	
-	
-	public boolean validarPatente(String patente) {
-		// Que no sea nula o vacía
-		if (patente == null || patente.trim().isEmpty()) {
-			return false;
-	    }
-
-		String formato1 = "^[A-Z]{2}\\d{4}$";   // AB1234
-	    String formato2 = "^[A-Z]{4}\\d{2}$";   // ABCD12
-		
-	    
-	    if (!patente.matches(formato1) && !patente.matches(formato2)) return false;
-	    
-	    for(Auto auto : BD_copia) {
-	    	if (auto.getPatente().equals(patente)) {
-	    		return false;
-	    	}
-	    }
-	    
-	    return true;
-	    
+	@Override
+	public boolean estaPatente(String patente)throws RemoteException{
+		for(Auto auto : BD_copia) {
+	    	if (auto.getPatente().equals(patente)) return true;
+		}
+		return false;
 	}
 	
 	
 	@Override
-	public void agregarAuto() throws IOException, RemoteException {
-		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		
-		
-		System.out.println("Ingrese la patente del vehículo: (FORMATO: ABCD34 o AB1234)");
-		String patente = reader.readLine();
-		
-		boolean validadorPatente = false;
-		
-		while(validadorPatente == false) {
-			
-			if(validarPatente(patente) == true) {
-				validadorPatente = true;
-			}
-			else {
-				System.out.println("Formato inválido o Patente repetida, ingrese nuevamente");
-				patente = reader.readLine();
-			}
-
-		}
-		
-		
-		
-		System.out.println("Ingrese el conductor del vehículo: ");
-		String conductor = reader.readLine();
-		System.out.println("");
-		
-		String tipoCombustible = "";
-	    boolean entradaValida = false;
-
-	    while (!entradaValida) {
-	        System.out.println("Seleccione el tipo de combustible del vehículo:");
-	        System.out.println("1. 93");
-	        System.out.println("2. 95");
-	        System.out.println("3. 97");
-	        System.out.println("4. Kerosene");
-	        System.out.println("5. Diesel");
-	        System.out.print("Ingrese el número de la opción: ");
-	        String entrada = reader.readLine().trim();
-
-	        switch (entrada) {
-	            case "1": tipoCombustible = "93"; entradaValida = true; break;
-	            case "2": tipoCombustible = "95"; entradaValida = true; break;
-	            case "3": tipoCombustible = "97"; entradaValida = true; break;
-	            case "4": tipoCombustible = "KE"; entradaValida = true; break;
-	            case "5": tipoCombustible = "DI"; entradaValida = true; break;
-	            default:
-	                System.out.println("Opción inválida. Intente nuevamente.\n");
-	        }
-	    }
-		
-		Auto auto = new Auto(patente, conductor, tipoCombustible);
-		
-		BD_copia.add(auto);
-		insertar_BD(auto);
-
+	public boolean agregarAuto(Auto auto) throws RemoteException{
+		if (insertar_BD(auto)) {
+			BD_copia.add(auto);
+			return true;
+		}else return false;
 	}
 	
-	public void insertar_BD(Auto auto) {
+	public boolean insertar_BD(Auto auto) {
 		Connection connection = null;
 		PreparedStatement ps = null;
 	    try {
@@ -196,51 +129,27 @@ public class ServerImpl implements InterfazDeServer{
 
 	        if (filas > 0) {
 	            System.out.println("Auto insertado correctamente.\n");
+	            return true;
 	        } else {
 	            System.out.println("No se insertó el auto.");
+	            return false;
 	        }
 	    } catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("No se pudo conectar a la BD");
+			return false;
 		}
 	}
 	
-	public void eliminarAuto() throws IOException, RemoteException {
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-	    if (BD_copia.isEmpty()) {
-	        System.out.println("No hay autos registrados para eliminar.");
-	        return;
-	    }
-
-	    System.out.println("Lista de autos registrados:");
-	    for (int i = 0; i < BD_copia.size(); i++) {
-	        Auto auto = BD_copia.get(i);
-	        System.out.println((i + 1) + ". Patente: " + auto.getPatente() + " | Conductor: " + auto.getConductor() + " | Combustible: " + auto.getTipoCombustible());
-	    }
-
-	    System.out.print("\nIngrese el número del auto que desea eliminar: ");
-	    String entrada = reader.readLine().trim();
-
-	    try {
-	        int seleccion = Integer.parseInt(entrada);
-
-	        if (seleccion < 1 || seleccion > BD_copia.size()) {
-	            System.out.println("Número fuera de rango.");
-	            return;
-	        }
-
-	        Auto autoSeleccionado = BD_copia.get(seleccion - 1);
-	        BD_copia.remove(seleccion - 1);
-	        eliminar_BD(autoSeleccionado.getPatente());
-
-	        System.out.println("Auto eliminado correctamente: " + autoSeleccionado.getPatente() + "\n");
-	    } catch (NumberFormatException e) {
-	        System.out.println("Entrada inválida. Debe ingresar un número.");
-	    }
+	public boolean eliminarAuto(int seleccion) throws IOException, RemoteException {
+		Auto autoSeleccionado = BD_copia.get(seleccion - 1);
+		if (eliminar_BD(autoSeleccionado.getPatente())) {
+			BD_copia.remove(seleccion - 1);
+			return true;
+		}else return false;
 	}
 
-	public void eliminar_BD(String patente) {
+	public boolean eliminar_BD(String patente) {
 	    Connection connection = null;
 	    PreparedStatement ps = null;
 	    try {
@@ -258,11 +167,13 @@ public class ServerImpl implements InterfazDeServer{
 
 	        if (filas == 0) {
 	            System.out.println("No se encontró un auto con esa patente en la base de datos.");
+	            return false;
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        System.out.println("Error al conectar o eliminar en la base de datos.");
 	    }
+	    return true;
 	}
 	
 	@Override

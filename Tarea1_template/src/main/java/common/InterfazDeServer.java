@@ -15,6 +15,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 
+
 public interface InterfazDeServer extends Remote{
 	public int heartbeat() throws RemoteException;
     public void conectarBD () throws RemoteException;
@@ -25,11 +26,11 @@ public interface InterfazDeServer extends Remote{
     public String getToken() throws RemoteException;
     public ArrayList<Estacion> getDataFromApi() throws RemoteException;
 
-    public void agregarAuto() throws IOException, RemoteException;
-	public void eliminarAuto() throws IOException, RemoteException;
+    public boolean agregarAuto(Auto auto) throws RemoteException;
+	public boolean eliminarAuto(int seleccion) throws IOException, RemoteException;
 	public void agregarCompra(RegistroCompra compra) throws RemoteException, IOException, SQLException;
 	public boolean modificarConductor(String patente, String nuevoConductor) throws RemoteException;
-
+	public boolean estaPatente(String patente)throws RemoteException;
 
     public ArrayList<Estacion> getBencinerasPorComunaYMarca(String comuna, String marca) throws RemoteException, JsonMappingException, JsonProcessingException;
     public ArrayList<Estacion> getPrecioxComuna(String tipoDeCombustible, String comuna) throws JsonMappingException, JsonProcessingException, RemoteException;

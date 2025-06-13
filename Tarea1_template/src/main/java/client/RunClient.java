@@ -10,8 +10,7 @@ public class RunClient {
     public static void main(String[] args) throws NotBoundException, NumberFormatException, IOException{
 
     	Client client = new Client();
-        client.startClient();           // Conexión al servidor (principal o respaldo)
-        client.startHeartbeat();   
+        client.startClient();           // Conexión al servidor (principal o respaldo)  
         System.out.println("Cliente Conectado!! \n");
 
         int opcion = 1;
