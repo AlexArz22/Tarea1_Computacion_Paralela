@@ -5,13 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.rmi.NotBoundException;
 
-public class RunClient {
+public class RunClient2 {
 
     public static void main(String[] args) throws NotBoundException, NumberFormatException, IOException{
 
-    	Client client = new Client();
-        client.startClient();           // Conexión al servidor (principal o respaldo)
-        client.startHeartbeat();   
+        Client client = new Client();
+        client.startClient();
         System.out.println("Cliente Conectado!! \n");
 
         int opcion = 1;

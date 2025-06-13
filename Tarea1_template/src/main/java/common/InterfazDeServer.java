@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 
 public interface InterfazDeServer extends Remote{
+	public int heartbeat() throws RemoteException;
     public void conectarBD () throws RemoteException;
 
     public ArrayList <Auto> getAutos() throws RemoteException;

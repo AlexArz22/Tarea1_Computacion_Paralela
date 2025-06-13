@@ -27,13 +27,85 @@ import common.Estacion;
 
 public class Client {
 
-    private InterfazDeServer server;
+	private InterfazDeServer server;
+    private String host = "localhost";
+    private int primaryPort = 1032;
+    private int backupPort = 1033;
+    private boolean connectedToPrimary = true;
+    private boolean running = true;
     
     public Client() {};
 
     public void startClient() throws RemoteException, NotBoundException {
-        Registry registry = LocateRegistry.getRegistry("localhost", 1032);
-        server = (InterfazDeServer) registry.lookup("server");
+        conectarServidorPrincipal();
+        startHeartbeat();
+    }
+
+    private void conectarServidorPrincipal() {
+        server = establecerConexion(host, primaryPort, "server");
+        if (server == null) {
+            System.out.println("No se pudo conectar al servidor principal. Intentando servidor de respaldo...");
+            cambiarAServidorRespaldo();
+        } else {
+            connectedToPrimary = true;
+            System.out.println("Conectado al servidor principal.");
+        }
+    }
+
+    private void cambiarAServidorRespaldo() {
+        server = establecerConexion(host, backupPort, "serverRespaldo");
+        if (server == null) {
+            System.err.println("No se pudo conectar al servidor de respaldo.");
+            terminarEjecucion();
+        } else {
+            connectedToPrimary = false;
+            System.out.println("Conectado al servidor de respaldo.");
+        }
+    }
+
+    private InterfazDeServer establecerConexion(String host, int port, String bindingName) {
+        try {
+            Registry registry = LocateRegistry.getRegistry(host, port);
+            return (InterfazDeServer) registry.lookup(bindingName);
+        } catch (java.rmi.ConnectException e) {
+            System.out.println("Servidor " + bindingName + " no está disponible. Intentando otro servidor...");
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error al conectar a " + bindingName + ": " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    public void startHeartbeat() {
+        new Thread(() -> {
+            while (running) {
+                try {
+                    Thread.sleep(1000); // Enviar heartbeat cada 1 segundo
+                    if (server != null) {
+                        if (server.heartbeat() != 0) {
+                            throw new RemoteException("Heartbeat inválido");
+                        }
+                    }
+                } catch (RemoteException e) {
+                    if (connectedToPrimary) {
+                        System.err.println("Fallo el servidor principal. Cambiando a servidor de respaldo...");
+                        cambiarAServidorRespaldo();
+                    } else {
+                        System.err.println("Fallo el servidor de respaldo. Terminando cliente...");
+                        terminarEjecucion();
+                    }
+                } catch (InterruptedException e) {
+                    System.err.println("Heartbeat interrumpido: " + e.getMessage());
+                }
+            }
+        }).start();
+    }
+
+
+    private void terminarEjecucion() {
+        running = false;
+        System.exit(1);
     }
 
     public void mostrarAutos() throws RemoteException {
@@ -357,7 +429,4 @@ public class Client {
 	        System.out.println("No se pudo actualizar el conductor.");
 	    }
 	}
-
-	
-	
 }

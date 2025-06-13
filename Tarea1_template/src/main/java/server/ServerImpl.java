@@ -548,4 +548,9 @@ public class ServerImpl implements InterfazDeServer{
 	        if (connection != null) connection.close();
 	    }
 	}
+	
+	public int heartbeat() throws RemoteException {
+		return 0;
+	}
+	
 }
