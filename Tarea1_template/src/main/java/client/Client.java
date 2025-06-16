@@ -112,6 +112,16 @@ public class Client {
     }
 
     public void mostrarAutos() throws RemoteException {
+    	long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+                return; 
+            }
+        }
         ArrayList<Auto> autos = server.getAutos();
         
         if(autos.isEmpty()) {
@@ -142,66 +152,101 @@ public class Client {
 		
 	    
 	    if (!patente.matches(formato1) && !patente.matches(formato2)) return false;
-	    
+	    long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Verificando patente favor espere" + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+            }
+        }
 	    if(server.estaPatente(patente)) return false;
 	    return true;
 	}
 
-    public void agregarAuto() throws IOException{
-    	
-    	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-		
-		System.out.println("Ingrese la patente del vehículo: (FORMATO: ABCD34 o AB1234)");
-		String patente = reader.readLine();
-		
-		boolean validadorPatente = false;
-		
-		while(validadorPatente == false) {
-			
-			if(validarPatente(patente) == true) {
-				validadorPatente = true;
-			}
-			else {
-				System.out.println("Formato inválido o Patente repetida, ingrese nuevamente");
-				patente = reader.readLine();
-			}
+    public void agregarAuto() throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
-		}
-		System.out.println("Ingrese el conductor del vehículo: ");
-		String conductor = reader.readLine();
-		System.out.println("");
-		
-		String tipoCombustible = "";
-	    boolean entradaValida = false;
+        System.out.println("Ingrese la patente del vehículo: (FORMATO: ABCD34 o AB1234)");
+        String patente = reader.readLine();
 
-	    while (!entradaValida) {
-	        System.out.println("Seleccione el tipo de combustible del vehículo:");
-	        System.out.println("1. 93");
-	        System.out.println("2. 95");
-	        System.out.println("3. 97");
-	        System.out.println("4. Kerosene");
-	        System.out.println("5. Diesel");
-	        System.out.print("Ingrese el número de la opción: ");
-	        String entrada = reader.readLine().trim();
+        boolean validadorPatente = false;
 
-	        switch (entrada) {
-	            case "1": tipoCombustible = "93"; entradaValida = true; break;
-	            case "2": tipoCombustible = "95"; entradaValida = true; break;
-	            case "3": tipoCombustible = "97"; entradaValida = true; break;
-	            case "4": tipoCombustible = "KE"; entradaValida = true; break;
-	            case "5": tipoCombustible = "DI"; entradaValida = true; break;
-	            default:
-	                System.out.println("Opción inválida. Intente nuevamente.\n");
-	        }
-	    }
-        if(server.agregarAuto(new Auto(patente, conductor, tipoCombustible))) {
-        	System.out.println("Auto agregado correctamente.");
-        }else {
-        	System.out.println("No se pudo agregar el auto.");
-        } 
+        while (!validadorPatente) {
+            if (validarPatente(patente)) {
+                validadorPatente = true;
+            } else {
+                System.out.println("Formato inválido o Patente repetida, ingrese nuevamente");
+                patente = reader.readLine();
+            }
+        }
+
+        System.out.println("Ingrese el conductor del vehículo: ");
+        String conductor = reader.readLine();
+        System.out.println("");
+
+        String tipoCombustible = "";
+        boolean entradaValida = false;
+
+        while (!entradaValida) {
+            System.out.println("Seleccione el tipo de combustible del vehículo:");
+            System.out.println("1. 93");
+            System.out.println("2. 95");
+            System.out.println("3. 97");
+            System.out.println("4. Kerosene");
+            System.out.println("5. Diesel");
+            System.out.print("Ingrese el número de la opción: ");
+            String entrada = reader.readLine().trim();
+
+            switch (entrada) {
+                case "1":
+                    tipoCombustible = "93";
+                    entradaValida = true;
+                    break;
+                case "2":
+                    tipoCombustible = "95";
+                    entradaValida = true;
+                    break;
+                case "3":
+                    tipoCombustible = "97";
+                    entradaValida = true;
+                    break;
+                case "4":
+                    tipoCombustible = "KE";
+                    entradaValida = true;
+                    break;
+                case "5":
+                    tipoCombustible = "DI";
+                    entradaValida = true;
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente nuevamente.\n");
+            }
+        }
+
+        long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+                return; 
+            }
+        }
+
+        if (server.agregarAuto(new Auto(patente, conductor, tipoCombustible))) {
+            System.out.println("Auto agregado correctamente.");
+        } else {
+            System.out.println("No se pudo agregar el auto.");
+        }
     }
 
+
+
     public void quitarAuto() throws IOException {
+    	
     	ArrayList<Auto> autos= server.getAutos();
     	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -228,6 +273,18 @@ public class Client {
 	        }
 	        
 	        Auto autoSeleccionado = autos.get(seleccion - 1);
+	        
+	        long esperaMs = server.tiempoRestanteBloqueo();
+	        if (esperaMs > 0) {
+	            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+	            try {
+	                Thread.sleep(esperaMs);
+	            } catch (InterruptedException e) {
+	                System.out.println("Espera interrumpida.");
+	                return; 
+	            }
+	        }
+	        
 	        
 	        if (server.eliminarAuto(autoSeleccionado)) {
 	            System.out.println("Auto eliminado correctamente.");
@@ -268,6 +325,17 @@ public class Client {
     
     
 	public void seleccionarAuto() throws RemoteException, JsonMappingException, JsonProcessingException {
+		long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+                return; 
+            }
+        }
+		
 		ArrayList<Auto> autos = server.getAutos();
 		
         if(autos.isEmpty()) {
@@ -444,6 +512,17 @@ public class Client {
         
         RegistroCompra registroCompra = new RegistroCompra(0,autoSeleccionado.getPatente(), litros, gastoTotal, fechaCompra);
         
+        long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+                return; 
+            }
+        }
+        
         try {
             server.agregarCompra(registroCompra);
             System.out.println("Compra registrada en la comuna '" + comuna + "' en la estación de servicio '" + marca + "'.");
@@ -478,6 +557,16 @@ public class Client {
 	
 	public void verHistorialCompras(Auto autoSeleccionado) throws RemoteException {
 	    String patente = autoSeleccionado.getPatente();
+	    long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+                return; 
+            }
+        }
 	    ArrayList<RegistroCompra> historial = server.getHistorialCompras(patente);
 	    
 	    if (historial.isEmpty()) {
@@ -504,6 +593,17 @@ public class Client {
 
 	    System.out.print("Ingrese el nuevo nombre del conductor: ");
 	    String nuevoConductor = scanner.nextLine();
+	    
+	    long esperaMs = server.tiempoRestanteBloqueo();
+        if (esperaMs > 0) {
+            System.out.println("Recurso ocupado, esperando " + (esperaMs / 1000.0) + " segundos...");
+            try {
+                Thread.sleep(esperaMs);
+            } catch (InterruptedException e) {
+                System.out.println("Espera interrumpida.");
+                return; 
+            }
+        }
 
 	    boolean exito = server.modificarConductor(autoSeleccionado.getPatente(), nuevoConductor);
 
@@ -513,4 +613,6 @@ public class Client {
 	        System.out.println("No se pudo actualizar el conductor.");
 	    }
 	}
+	
+	
 }

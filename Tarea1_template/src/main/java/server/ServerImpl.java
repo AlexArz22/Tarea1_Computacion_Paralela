@@ -129,6 +129,18 @@ public class ServerImpl implements InterfazDeServer{
 	}
 	
 	@Override
+	public long tiempoRestanteBloqueo() throws RemoteException {
+	    long now = System.currentTimeMillis();
+	    long timeSinceLastRelease = now - lastReleaseTime;
+
+	    if (timeSinceLastRelease < MIN_BLOCK_TIME_MS) {
+	        return MIN_BLOCK_TIME_MS - timeSinceLastRelease;
+	    } else {
+	        return 0;
+	    }
+	}
+	
+	@Override
 	public Auto Auto(String patente, String conductor, String tipoCombustible) throws RemoteException{
 		Auto auto = new Auto(patente, conductor, tipoCombustible);
 		return auto;
@@ -458,9 +470,6 @@ public class ServerImpl implements InterfazDeServer{
 	
 	@Override
 	public ArrayList<RegistroCompra> getHistorialCompras(String patente) throws RemoteException {
-		if(!requestMutex(patente)) {
-			throw new RemoteException("no se pudo hacer bloqueo getHistorialCompras");
-		}
 	    Connection connection = null;
 	    PreparedStatement ps = null;
 	    ResultSet resultados = null;
@@ -495,8 +504,6 @@ public class ServerImpl implements InterfazDeServer{
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	        System.out.println("No se pudo conectar a la BD o hubo un error en la consulta");
-	    }finally {
-	    	releaseMutex(patente);
 	    }
 	    
 	    return historial;
