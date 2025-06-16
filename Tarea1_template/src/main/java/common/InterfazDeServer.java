@@ -21,7 +21,6 @@ public interface InterfazDeServer extends Remote{
     public void conectarBD () throws RemoteException;
 
     public ArrayList <Auto> getAutos() throws RemoteException;
-    public Auto Auto(String patente, String conductor, String tipoCombustible) throws RemoteException;
 
     public String getToken() throws RemoteException;
     public ArrayList<Estacion> getDataFromApi() throws RemoteException;

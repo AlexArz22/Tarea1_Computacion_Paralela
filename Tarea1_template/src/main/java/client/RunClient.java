@@ -9,8 +9,7 @@ public class RunClient {
 
     public static void main(String[] args) throws NotBoundException, NumberFormatException, IOException{
 
-    	Client client = new Client();
-        client.startClient();         
+    	Client client = new Client();        
         System.out.println("Cliente Conectado!! \n");
 
         int opcion = 1;

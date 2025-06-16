@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection; 
 import javax.net.ssl.HttpsURLConnection; 
 import java.net.URL;
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.Connection;
@@ -15,10 +14,9 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.PreparedStatement;
 import java.text.Normalizer;
 import java.util.ArrayList;
-
-import java.sql.PreparedStatement;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.zip.GZIPInputStream;
@@ -31,14 +29,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
 
 import common.Auto;
 import common.Estacion;
 import common.InterfazDeServer; 
 import common.RegistroCompra;
+
 
 public class ServerImpl implements InterfazDeServer{
 	private Lock lock = new ReentrantLock();
@@ -109,11 +105,7 @@ public class ServerImpl implements InterfazDeServer{
 				
 				BD_copia.add(newAuto);
 				
-				//System.out.println("" + patente + "" + conductor + "" + tipoCombustible);
-			}
-			
-			//System.out.println(resultados);
-			
+			}	
 			connection.close();	
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -141,19 +133,12 @@ public class ServerImpl implements InterfazDeServer{
 	}
 	
 	@Override
-	public Auto Auto(String patente, String conductor, String tipoCombustible) throws RemoteException{
-		Auto auto = new Auto(patente, conductor, tipoCombustible);
-		return auto;
-	}
-	
-	@Override
 	public boolean estaPatente(String patente)throws RemoteException{
 		for(Auto auto : BD_copia) {
 	    	if (auto.getPatente().equals(patente)) return true;
 		}
 		return false;
 	}
-	
 	
 	@Override
 	public boolean agregarAuto(Auto auto) throws RemoteException{

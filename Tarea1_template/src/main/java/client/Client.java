@@ -36,12 +36,10 @@ public class Client {
     private boolean connectedToPrimary = true;
     private boolean running = true;
     
-    public Client() {};
-
-    public void startClient() throws RemoteException, NotBoundException {
-        conectarServidorPrincipal();
+    public Client() {
+    	conectarServidorPrincipal();
         startHeartbeat();
-    }
+    };
 
     private void conectarServidorPrincipal() {
         server = establecerConexion(host, primaryPort, "server");
@@ -103,7 +101,6 @@ public class Client {
             }
         }).start();
     }
-
 
     private void terminarEjecucion() {
     	System.err.println("Terminando cliente...");
@@ -243,8 +240,6 @@ public class Client {
         }
     }
 
-
-
     public void quitarAuto() throws IOException {
     	
     	ArrayList<Auto> autos= server.getAutos();
@@ -319,10 +314,6 @@ public class Client {
 
         System.out.println("Total de estaciones: "+ estaciones.size());
     }
-
-
-
-    
     
 	public void seleccionarAuto() throws RemoteException, JsonMappingException, JsonProcessingException {
 		long esperaMs = server.tiempoRestanteBloqueo();
@@ -364,7 +355,7 @@ public class Client {
 	    }
 	    
 	    menuSeleccion(autoSeleccionado);
-}
+	}
 
 	private void menuSeleccion(Auto autoSeleccionado) throws JsonMappingException, JsonProcessingException, RemoteException {
 
@@ -407,7 +398,6 @@ public class Client {
 	    }
 	}
 	
-	
     public boolean validarFecha(String fecha) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -418,7 +408,6 @@ public class Client {
         }
     }
 	
-
 	private void registrarCompra(Auto autoSeleccionado) throws JsonMappingException, JsonProcessingException, RemoteException {
 
 		System.out.println("Registrar compra para el auto con patente: " + autoSeleccionado.getPatente());
@@ -612,7 +601,5 @@ public class Client {
 	    } else {
 	        System.out.println("No se pudo actualizar el conductor.");
 	    }
-	}
-	
-	
+	}	
 }
