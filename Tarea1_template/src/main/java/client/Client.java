@@ -83,7 +83,7 @@ public class Client {
         new Thread(() -> {
             while (running) {
                 try {
-                    Thread.sleep(1000); // Enviar heartbeat cada 1 segundo
+                    Thread.sleep(1000); 
                     if (server != null) {
                         if (server.heartbeat() != 0) {
                             throw new RemoteException("Heartbeat inválido");
@@ -203,7 +203,6 @@ public class Client {
 
     public void quitarAuto() throws IOException {
     	ArrayList<Auto> autos= server.getAutos();
-    	
     	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 
 	    if (autos.isEmpty()) {
@@ -228,8 +227,13 @@ public class Client {
 	            return;
 	        }
 	        
-	        if (server.eliminarAuto(seleccion))System.out.println("Auto eliminado correctamente.");
-	        else System.out.println("No se pudo eliminar el auto.");
+	        Auto autoSeleccionado = autos.get(seleccion - 1);
+	        
+	        if (server.eliminarAuto(autoSeleccionado)) {
+	            System.out.println("Auto eliminado correctamente.");
+	        } else {
+	            System.out.println("No se pudo eliminar el auto. Es posible que ya no exista.");
+	        }
 	        
 	    } catch (NumberFormatException e) {
 	        System.out.println("Entrada inválida. Debe ingresar un número.");

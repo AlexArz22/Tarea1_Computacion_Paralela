@@ -27,7 +27,7 @@ public interface InterfazDeServer extends Remote{
     public ArrayList<Estacion> getDataFromApi() throws RemoteException;
 
     public boolean agregarAuto(Auto auto) throws RemoteException;
-	public boolean eliminarAuto(int seleccion) throws IOException, RemoteException;
+    public boolean eliminarAuto(Auto auto) throws RemoteException;
 	public void agregarCompra(RegistroCompra compra) throws RemoteException, IOException, SQLException;
 	public boolean modificarConductor(String patente, String nuevoConductor) throws RemoteException;
 	public boolean estaPatente(String patente)throws RemoteException;

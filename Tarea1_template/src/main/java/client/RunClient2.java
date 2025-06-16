@@ -11,7 +11,7 @@ public class RunClient2 {
 
         Client client = new Client();
         client.startClient();
-        System.out.println("Cliente Conectado!! \n");
+        System.out.println("Cliente 2 Conectado!! \n");
 
         int opcion = 1;
         while(opcion != 0) {

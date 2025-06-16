@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
+import java.net.HttpURLConnection; 
+import javax.net.ssl.HttpsURLConnection; 
+import java.net.URL;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -41,7 +43,7 @@ import common.RegistroCompra;
 public class ServerImpl implements InterfazDeServer{
 	private Lock lock = new ReentrantLock();
 	private long lastReleaseTime = 0;
-	private final long MIN_BLOCK_TIME_MS = 15000;  // 15 segundos de bloqueo
+	private final long MIN_BLOCK_TIME_MS = 8000;  
 	
 	public ServerImpl() throws RemoteException {
 		conectarBD();
@@ -72,29 +74,6 @@ public class ServerImpl implements InterfazDeServer{
 		System.out.println(nombreCliente+" libera recurso");
 		lock.unlock();
 	}
-	
-	
-	
-	//SE SUPONE QUE SON 8 segundos pero se libera cuando se deja de ocupar 
-	/*
-	private boolean requestMutex(String nombreCliente) {
-		try {
-			System.out.println(nombreCliente+" intentando acceder a recurso");
-			boolean acquired = lock.tryLock(600,TimeUnit.SECONDS);
-			if (acquired) {
-				System.out.println(nombreCliente+" obtuvo recurso");
-			}
-			return acquired;
-		}catch(InterruptedException e){
-			System.err.println("error al querer obtener recurso");
-			return false;
-		}
-	}
-	
-	private void releaseMutex(String nombreCliente) {
-		System.out.println(nombreCliente+" libera recurso");
-		lock.unlock();
-	}*/
 
 	private ArrayList<Auto> BD_copia = new ArrayList<>();
 	
@@ -212,21 +191,23 @@ public class ServerImpl implements InterfazDeServer{
 		}
 	}
 	
-	public boolean eliminarAuto(int seleccion) throws IOException, RemoteException {
-		Auto autoSeleccionado = BD_copia.get(seleccion - 1);
-		if(!requestMutex(autoSeleccionado.getPatente())) {
-			throw new RemoteException("no se pudo hacer bloqueo ELIMINAR AUTO");
-		}
-			
-		try {
-			if (eliminar_BD(autoSeleccionado.getPatente())) {
-				BD_copia.remove(seleccion - 1);
-				return true;
-			}else return false;
-		}finally {
-			releaseMutex(autoSeleccionado.getPatente());
-		}
+	public boolean eliminarAuto(Auto auto) throws RemoteException {
+	    String patente = auto.getPatente();
+	    if (!requestMutex(patente)) {
+	        throw new RemoteException("No se pudo bloquear para eliminar auto");
+	    }
+	    try {
+	        if (eliminar_BD(patente)) {
+	            BD_copia.removeIf(a -> a.getPatente().equals(patente));
+	            return true;
+	        } else {
+	            return false; 
+	        }
+	    } finally {
+	        releaseMutex(patente);
+	    }
 	}
+
 
 	public boolean eliminar_BD(String patente) {
 	    Connection connection = null;
@@ -314,7 +295,7 @@ public class ServerImpl implements InterfazDeServer{
 
 	    try {
 	        URL url = new URL(urlString);
-	        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+	        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
 	        con.setRequestMethod("POST");
 
 	        int status = con.getResponseCode();
